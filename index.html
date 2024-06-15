@@ -71,52 +71,49 @@
         </table>
     </div>
 
-    <!-- Script para carregar e atualizar os dados do arquivo CSV -->
+    <!-- Script para carregar dados do arquivo CSV -->
     <script>
-        // Função para carregar e atualizar os dados do arquivo
-        function loadData() {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        updateTable(xhr.responseText);
-                    } else {
-                        console.error('Erro ao carregar o arquivo:', xhr.status);
-                    }
-                }
-            };
-            // Atualize a URL para o caminho do arquivo CSV
-            var url = 'painel.csv?' + new Date().getTime();
-            xhr.open('GET', url, true);
-            xhr.send();
+        // URL do arquivo CSV no GitHub
+        var csvUrl = 'https://raw.githubusercontent.com/cdjoanin/cdjoanin/main/painel.csv';
+
+        // Função para carregar e atualizar os dados do arquivo CSV
+        function loadCsvData() {
+            fetch(csvUrl)
+                .then(response => response.text())
+                .then(data => updateTable(data))
+                .catch(error => console.error('Erro ao carregar os dados:', error));
         }
 
-        // Função para atualizar a tabela com os dados do arquivo
+        // Função para atualizar a tabela com os dados do arquivo CSV
         function updateTable(data) {
             var table = document.getElementById('data-table');
             table.innerHTML = ''; // Limpa o conteúdo atual da tabela
-            var lines = data.split('\n'); // Divide o texto em linhas
-            var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
-            lines[0].split(';').forEach(function(column) {
-                headerRow += '<th>' + column.trim().replace(/"/g, '') + '</th>'; // Remove as aspas duplas do cabeçalho das colunas
+            var lines = data.trim().split('\n');
+            
+            // Cria a linha de cabeçalho
+            var headerRow = '<tr>';
+            lines[0].split(';').forEach(column => {
+                headerRow += '<th>' + column.trim().replace(/"/g, '') + '</th>';
             });
             headerRow += '</tr>';
-            table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
+            table.innerHTML += headerRow;
+
+            // Cria as linhas de dados
             for (var i = 1; i < lines.length; i++) {
                 var newRow = '<tr>';
-                lines[i].split(';').forEach(function(column) {
-                    newRow += '<td>' + column.trim().replace(/"/g, '') + '</td>'; // Remove as aspas duplas de cada coluna
+                lines[i].split(';').forEach(column => {
+                    newRow += '<td>' + column.trim().replace(/"/g, '') + '</td>';
                 });
                 newRow += '</tr>';
-                table.innerHTML += newRow; // Adiciona a linha à tabela
+                table.innerHTML += newRow;
             }
         }
 
-        // Chama a função de carregar dados ao carregar a página
+        // Carrega os dados ao carregar a página
         window.onload = function() {
-            loadData();
+            loadCsvData();
             // Atualiza os dados a cada 30 segundos
-            setInterval(loadData, 30000); // 30 segundos em milissegundos
+            setInterval(loadCsvData, 30000); // 30 segundos em milissegundos
         };
     </script>
 </body>
