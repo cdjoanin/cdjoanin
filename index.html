@@ -79,9 +79,14 @@
         // Função para carregar e atualizar os dados do arquivo CSV
         function loadCsvData() {
             fetch(csvUrl)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar os dados do arquivo CSV');
+                    }
+                    return response.text();
+                })
                 .then(data => updateTable(data))
-                .catch(error => console.error('Erro ao carregar os dados:', error));
+                .catch(error => console.error('Erro:', error.message));
         }
 
         // Função para atualizar a tabela com os dados do arquivo CSV
