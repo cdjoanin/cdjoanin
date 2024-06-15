@@ -72,12 +72,9 @@
     </div>
 
     <script>
-        // URL do arquivo CSV no GitHub
-        var csvUrl = 'https://raw.githubusercontent.com/cdjoanin/cdjoanin/main/painel.csv';
-
         // Função para carregar e atualizar os dados do arquivo CSV
         function loadCsvData() {
-            fetch(csvUrl)
+            fetch('painel.csv') // Caminho para o arquivo CSV local
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Erro ao carregar os dados do arquivo CSV');
