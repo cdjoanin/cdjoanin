@@ -80,7 +80,11 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        updateTable(xhr.responseText);
+                        try {
+                            updateTable(xhr.responseText);
+                        } catch (error) {
+                            console.error('Erro ao atualizar a tabela:', error);
+                        }
                     } else {
                         console.error('Erro ao carregar o arquivo:', xhr.status);
                     }
@@ -97,19 +101,25 @@
             var table = document.getElementById('data-table');
             table.innerHTML = ''; // Limpa o conteúdo atual da tabela
             var lines = data.split('\n'); // Divide o texto em linhas
-            var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
-            lines[0].split(';').forEach(function(column) {
-                headerRow += '<th>' + column.trim().replace(/['"]/g, '') + '</th>'; // Adiciona o cabeçalho das colunas com estilo laranja e remove aspas
-            });
-            headerRow += '</tr>';
-            table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
-            for (var i = 1; i < lines.length; i++) {
-                var newRow = '<tr>';
-                lines[i].split(';').forEach(function(column) {
-                    newRow += '<td>' + column.trim().replace(/['"]/g, '') + '</td>'; // Adiciona cada coluna como uma célula da linha e remove aspas
+            if (lines.length > 0) {
+                var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
+                lines[0].split(';').forEach(function(column) {
+                    headerRow += '<th>' + column.trim().replace(/['"]/g, '') + '</th>'; // Adiciona o cabeçalho das colunas com estilo laranja e remove aspas
                 });
-                newRow += '</tr>';
-                table.innerHTML += newRow; // Adiciona a linha à tabela
+                headerRow += '</tr>';
+                table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
+                for (var i = 1; i < lines.length; i++) {
+                    if (lines[i].trim()) {
+                        var newRow = '<tr>';
+                        lines[i].split(';').forEach(function(column) {
+                            newRow += '<td>' + column.trim().replace(/['"]/g, '') + '</td>'; // Adiciona cada coluna como uma célula da linha e remove aspas
+                        });
+                        newRow += '</tr>';
+                        table.innerHTML += newRow; // Adiciona a linha à tabela
+                    }
+                }
+            } else {
+                console.error('O arquivo CSV está vazio ou mal formatado.');
             }
         }
 
