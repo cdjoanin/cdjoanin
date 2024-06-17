@@ -91,33 +91,27 @@
             xhr.open('GET', url, true);
             xhr.send();
         }
-// Função para carregar e exibir dados do arquivo CSV
-function loadData() {
-    fetch('painel.csv')
-        .then(response => response.text())
-        .then(data => {
-            const table = document.getElementById('data-table');
-            table.innerHTML = '';
 
-            // Dividir o conteúdo do CSV em linhas
-            const lines = data.trim().split('\n');
-            
-            // Cria o cabeçalho da tabela
-            const headerRow = '<tr>' + lines[0].split(';').map(column => `<th>${column}</th>`).join('') + '</tr>';
-            table.innerHTML += headerRow;
-
-            // Cria as linhas de dados da tabela
-            for (let i = 1; i < lines.length; i++) {
-                const newRow = '<tr>' + lines[i].split(';').map(column => `<td>${column}</td>`).join('') + '</tr>';
-                table.innerHTML += newRow;
+        // Função para atualizar a tabela com os dados do arquivo
+        function updateTable(data) {
+            var table = document.getElementById('data-table');
+            table.innerHTML = ''; // Limpa o conteúdo atual da tabela
+            var lines = data.split('\n'); // Divide o texto em linhas
+            var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
+            lines[0].split(';').forEach(function(column) {
+                headerRow += '<th>' + column.trim().replace(/['"]/g, '') + '</th>'; // Adiciona o cabeçalho das colunas com estilo laranja e remove aspas
+            });
+            headerRow += '</tr>';
+            table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
+            for (var i = 1; i < lines.length; i++) {
+                var newRow = '<tr>';
+                lines[i].split(';').forEach(function(column) {
+                    newRow += '<td>' + column.trim().replace(/['"]/g, '') + '</td>'; // Adiciona cada coluna como uma célula da linha e remove aspas
+                });
+                newRow += '</tr>';
+                table.innerHTML += newRow; // Adiciona a linha à tabela
             }
-        })
-        .catch(error => console.error('Erro ao carregar o arquivo CSV:', error));
-}
-
-// Chama a função para carregar os dados do CSV ao carregar a página
-window.onload = loadData;
-
+        }
 
         // Chamar a função de carregar dados
         loadData();
