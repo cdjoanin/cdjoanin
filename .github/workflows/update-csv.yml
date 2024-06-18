@@ -1,38 +1,25 @@
-name: Update CSV File
+name: Validate CSV Update
 
 on:
-  schedule:
-    - cron: '*/1 * * * *'  # Executa a cada 1 minuto
+  push:
+    branches:
+      - main  # Altere para o nome da sua branch principal, se diferente
 
 jobs:
-  update-csv:
-    runs-on: windows-latest  # Executa no ambiente Windows
+  validate-csv:
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
 
-      - name: Check if CSV file has changed
-        id: check_changes
+      - name: Validate CSV presence
         run: |
-          cd C:\Users\Administrador\Desktop\PAINELCSV
-          git diff --quiet || echo "Files have changed"
-          echo "::set-output name=changed::$(if [ $? == 0 ]; then echo 'false'; else echo 'true'; fi)"
-          
-      - name: Copy CSV to GitHub repository
-        if: steps.check_changes.outputs.changed == 'true'
-        run: |
-          cd C:\Users\Administrador\Desktop\PAINELCSV
-          copy painel.CSV %GITHUB_WORKSPACE%\painel.CSV
-          cd %GITHUB_WORKSPACE%
-          git config --global user.email "cocjoanin001@gmail.com"
-          git config --global user.name "cdjoanin"
-          git add .
-          git status  # Adicione este comando para verificar o status atual do Git
-          git commit -m "Atualizando arquivo CSV automaticamente"
-          git push origin main
+          if (Test-Path -Path painel.CSV) {
+            Write-Output "painel.CSV encontrado."
+          }
+          else {
+            Write-Error "painel.CSV não encontrado!"
+            exit 1
+          }
+        shell: pwsh
