@@ -72,34 +72,57 @@
         </table>
     </div>
 
-    <!-- Script para WebSocket -->
+    <!-- Adicione o código JavaScript para carregar e atualizar os dados do arquivo -->
     <script>
-        const ws = new WebSocket('ws://localhost:8081'); // Conecta ao servidor WebSocket
-
-        ws.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            updateTable(data);
-        };
-
-        function updateTable(data) {
-            const table = document.getElementById('data-table');
-            table.innerHTML = ''; // Limpa o conteúdo atual da tabela
-            const headerRow = '<tr>';
-            Object.keys(data[0]).forEach(function(column) {
-                headerRow += '<th>' + column + '</th>'; // Adiciona o cabeçalho das colunas
-            });
-            headerRow += '</tr>';
-            table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
-
-            data.forEach(function(row) {
-                let newRow = '<tr>';
-                Object.values(row).forEach(function(value) {
-                    newRow += '<td>' + value + '</td>'; // Adiciona cada coluna como uma célula da linha
-                });
-                newRow += '</tr>';
-                table.innerHTML += newRow; // Adiciona a linha à tabela
-            });
+        // Função para carregar e atualizar os dados da API
+        function loadData() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        try {
+                            updateTable(JSON.parse(xhr.responseText));
+                        } catch (error) {
+                            console.error('Erro ao atualizar a tabela:', error);
+                        }
+                    } else {
+                        console.error('Erro ao carregar os dados da API:', xhr.status);
+                    }
+                }
+            };
+            xhr.open('GET', 'http://localhost:8080/api/dados', true); // Altere o endereço conforme necessário
+            xhr.send();
         }
+
+        // Função para atualizar a tabela com os dados da API
+        function updateTable(data) {
+            var table = document.getElementById('data-table');
+            table.innerHTML = ''; // Limpa o conteúdo atual da tabela
+            if (data && data.length > 0) {
+                var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
+                Object.keys(data[0]).forEach(function(key) {
+                    headerRow += '<th>' + key + '</th>'; // Adiciona o cabeçalho das colunas
+                });
+                headerRow += '</tr>';
+                table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
+                data.forEach(function(row) {
+                    var newRow = '<tr>';
+                    Object.values(row).forEach(function(value) {
+                        newRow += '<td>' + value + '</td>'; // Adiciona cada coluna como uma célula da linha
+                    });
+                    newRow += '</tr>';
+                    table.innerHTML += newRow; // Adiciona a linha à tabela
+                });
+            } else {
+                console.error('Os dados recebidos da API estão vazios ou mal formatados.');
+            }
+        }
+
+        // Chamar a função de carregar dados ao carregar a página
+        window.onload = function() {
+            loadData();
+            setInterval(loadData, 60000); // Atualiza os dados a cada 1 minuto
+        };
     </script>
 </body>
 </html>
