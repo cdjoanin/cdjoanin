@@ -11,21 +11,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          # Atualizando para usar Node.js 20
-          ref: v2
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: v2  # Utiliza a versão v2 do actions/checkout
+
+      - name: Check if CSV file has changed
+        id: check_changes
+        run: |
+          git diff --quiet || echo "Files have changed"
+          echo "::set-output name=changed::$(if [ $? == 0 ]; then echo 'false'; else echo 'true'; fi)"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '20'  # Configura o ambiente Node.js para a versão 20
 
       - name: Update CSV
+        if: steps.check_changes.outputs.changed == 'true'
         run: |
           cp ./painel.CSV $GITHUB_WORKSPACE/painel.CSV
           cd $GITHUB_WORKSPACE
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@users.noreply.github.com'
           git add .
-          git commit -m "Auto-commit do arquivo painel.CSV"
+          git commit -m "Atualizando arquivo CSV automaticamente"
           git push origin main
