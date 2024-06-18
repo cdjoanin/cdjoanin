@@ -33,5 +33,6 @@ jobs:
           git config --global user.email "cocjoanin001@gmail.com"
           git config --global user.name "cdjoanin"
           git add .
+          git status  # Adicione este comando para verificar o status atual do Git
           git commit -m "Atualizando arquivo CSV automaticamente"
           git push origin main
