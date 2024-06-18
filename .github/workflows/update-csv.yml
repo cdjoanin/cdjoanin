@@ -1,3 +1,9 @@
+name: Update CSV File
+
+on:
+  schedule:
+    - cron: '*/1 * * * *' # Executa a cada 1 minuto
+
 jobs:
   update-csv:
     runs-on: ubuntu-latest
