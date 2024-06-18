@@ -6,17 +6,12 @@ on:
 
 jobs:
   update-csv:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           ref: v2  # Utiliza a versão v2 do actions/checkout
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'  # Configura o ambiente Node.js para a versão 20
 
       - name: Check if CSV file has changed
         id: check_changes
@@ -27,8 +22,8 @@ jobs:
       - name: Update CSV
         if: steps.check_changes.outputs.changed == 'true'
         run: |
-          rm ./painel.CSV  # Remove o arquivo painel.CSV existente
-          cp /mnt/c/path/to/your/new/painel.CSV $GITHUB_WORKSPACE/painel.CSV  # Copia o novo arquivo para o diretório de trabalho do GitHub Actions
-          git add ./painel.CSV
+          del %GITHUB_WORKSPACE%\painel.CSV  # Remove o arquivo painel.CSV existente
+          copy C:\path\to\your\new\painel.CSV %GITHUB_WORKSPACE%\painel.CSV  # Copia o novo arquivo para o diretório de trabalho do GitHub Actions
+          git add .\painel.CSV
           git commit -m "Atualizando arquivo CSV automaticamente"
           git push origin main
