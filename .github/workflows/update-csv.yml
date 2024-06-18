@@ -1,0 +1,22 @@
+name: Update CSV File
+
+on:
+  schedule:
+    - cron: '*/1 * * * *' # Executa a cada 1 minuto
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update CSV
+        run: |
+          cp "C:\Users\Administrador\Desktop\PAINELCSV\painel.CSV" $GITHUB_WORKSPACE/painel.CSV
+          cd $GITHUB_WORKSPACE
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@users.noreply.github.com'
+          git add painel.CSV
+          git commit -m "Atualizando arquivo CSV automaticamente"
+          git push origin main
