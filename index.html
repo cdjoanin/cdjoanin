@@ -100,15 +100,16 @@
             table.innerHTML = ''; // Limpa o conteúdo atual da tabela
             if (data && data.length > 0) {
                 var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
-                Object.keys(data[0]).forEach(function(key) {
-                    headerRow += '<th>' + key + '</th>'; // Adiciona o cabeçalho das colunas
+                var columns = Object.keys(data[0]); // Obtém as colunas do primeiro objeto
+                columns.forEach(function(column) {
+                    headerRow += '<th>' + column + '</th>'; // Adiciona o cabeçalho das colunas
                 });
                 headerRow += '</tr>';
                 table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
                 data.forEach(function(row) {
                     var newRow = '<tr>';
-                    Object.values(row).forEach(function(value) {
-                        newRow += '<td>' + value + '</td>'; // Adiciona cada coluna como uma célula da linha
+                    columns.forEach(function(column) {
+                        newRow += '<td>' + row[column] + '</td>'; // Adiciona cada coluna como uma célula da linha
                     });
                     newRow += '</tr>';
                     table.innerHTML += newRow; // Adiciona a linha à tabela
