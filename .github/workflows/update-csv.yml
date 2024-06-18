@@ -2,28 +2,35 @@ name: Update CSV File
 
 on:
   schedule:
-    - cron: '*/1 * * * *' # Executa a cada 1 minuto
+    - cron: '*/1 * * * *'  # Executa a cada 1 minuto
 
 jobs:
   update-csv:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          ref: v2  # Utiliza a versão v2 do actions/checkout
+          node-version: '20'
 
       - name: Check if CSV file has changed
         id: check_changes
         run: |
+          cd C:\Users\Administrador\Desktop\PAINELCSV
           git diff --quiet || echo "Files have changed"
           echo "::set-output name=changed::$(if [ $? == 0 ]; then echo 'false'; else echo 'true'; fi)"
-
-      - name: Update CSV
+          
+      - name: Copy CSV to GitHub repository
         if: steps.check_changes.outputs.changed == 'true'
         run: |
-          del %GITHUB_WORKSPACE%\painel.CSV  # Remove o arquivo painel.CSV existente
-          copy C:\path\to\your\new\painel.CSV %GITHUB_WORKSPACE%\painel.CSV  # Copia o novo arquivo para o diretório de trabalho do GitHub Actions
-          git add .\painel.CSV
+          cd C:\Users\Administrador\Desktop\PAINELCSV
+          cp painel.CSV $GITHUB_WORKSPACE/painel.CSV
+          cd $GITHUB_WORKSPACE
+          git config --global user.email "cocjoanin001@gmail.com"
+          git config --global user.name "cdjoanin"
+          git add .
           git commit -m "Atualizando arquivo CSV automaticamente"
           git push origin main
