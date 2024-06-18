@@ -6,7 +6,8 @@ on:
 
 jobs:
   update-csv:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Executa no ambiente Windows
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -27,8 +28,8 @@ jobs:
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           cd C:\Users\Administrador\Desktop\PAINELCSV
-          cp painel.CSV $GITHUB_WORKSPACE/painel.CSV
-          cd $GITHUB_WORKSPACE
+          copy painel.CSV %GITHUB_WORKSPACE%\painel.CSV
+          cd %GITHUB_WORKSPACE%
           git config --global user.email "cocjoanin001@gmail.com"
           git config --global user.name "cdjoanin"
           git add .
