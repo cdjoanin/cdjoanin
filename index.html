@@ -72,62 +72,34 @@
         </table>
     </div>
 
-    <!-- Adicione o código JavaScript para carregar e atualizar os dados do arquivo -->
+    <!-- Script para WebSocket -->
     <script>
-        // Função para carregar e atualizar os dados do arquivo
-        function loadData() {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        try {
-                            updateTable(xhr.responseText);
-                        } catch (error) {
-                            console.error('Erro ao atualizar a tabela:', error);
-                        }
-                    } else {
-                        console.error('Erro ao carregar o arquivo:', xhr.status);
-                    }
-                }
-            };
-            // Adicione um parâmetro de data e hora aleatório à URL para evitar o cache
-            var url = 'painel.CSV?' + new Date().getTime();
-            xhr.open('GET', url, true);
-            xhr.send();
-        }
+        const ws = new WebSocket('ws://localhost:8081'); // Conecta ao servidor WebSocket
 
-        // Função para atualizar a tabela com os dados do arquivo
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            updateTable(data);
+        };
+
         function updateTable(data) {
-            var table = document.getElementById('data-table');
+            const table = document.getElementById('data-table');
             table.innerHTML = ''; // Limpa o conteúdo atual da tabela
-            var lines = data.split('\n'); // Divide o texto em linhas
-            if (lines.length > 0) {
-                var headerRow = '<tr>'; // Inicializa a linha de cabeçalho
-                lines[0].split(';').forEach(function(column) {
-                    headerRow += '<th>' + column.trim().replace(/['"]/g, '') + '</th>'; // Adiciona o cabeçalho das colunas com estilo laranja e remove aspas
+            const headerRow = '<tr>';
+            Object.keys(data[0]).forEach(function(column) {
+                headerRow += '<th>' + column + '</th>'; // Adiciona o cabeçalho das colunas
+            });
+            headerRow += '</tr>';
+            table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
+
+            data.forEach(function(row) {
+                let newRow = '<tr>';
+                Object.values(row).forEach(function(value) {
+                    newRow += '<td>' + value + '</td>'; // Adiciona cada coluna como uma célula da linha
                 });
-                headerRow += '</tr>';
-                table.innerHTML += headerRow; // Adiciona a linha de cabeçalho à tabela
-                for (var i = 1; i < lines.length; i++) {
-                    if (lines[i].trim()) {
-                        var newRow = '<tr>';
-                        lines[i].split(';').forEach(function(column) {
-                            newRow += '<td>' + column.trim().replace(/['"]/g, '') + '</td>'; // Adiciona cada coluna como uma célula da linha e remove aspas
-                        });
-                        newRow += '</tr>';
-                        table.innerHTML += newRow; // Adiciona a linha à tabela
-                    }
-                }
-            } else {
-                console.error('O arquivo CSV está vazio ou mal formatado.');
-            }
+                newRow += '</tr>';
+                table.innerHTML += newRow; // Adiciona a linha à tabela
+            });
         }
-
-        // Chamar a função de carregar dados
-        loadData();
-
-        // Atualiza os dados a cada 30 segundos
-        setInterval(loadData, 30000); // 30 segundos em milissegundos
     </script>
 </body>
 </html>
