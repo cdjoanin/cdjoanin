@@ -14,10 +14,11 @@
        const iframe = document.getElementById('vimeo-player');
        const player = new Vimeo.Player(iframe);
 
-       // Tente iniciar a reprodução
-       player.play().catch(function(error) {
-           // O autoplay pode ser bloqueado, então você pode lidar com isso aqui
-           console.log('Erro ao tentar reproduzir:', error);
+       // Iniciar reprodução após a página carregar
+       window.addEventListener('load', () => {
+           player.play().catch(function(error) {
+               console.log('Erro ao tentar reproduzir:', error);
+           });
        });
    </script>
 </body>
