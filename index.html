@@ -14,12 +14,15 @@
        const iframe = document.getElementById('vimeo-player');
        const player = new Vimeo.Player(iframe);
 
-       // Iniciar reprodução após a página carregar
-       window.addEventListener('load', () => {
+       // Função para iniciar a reprodução
+       function iniciarReproducao() {
            player.play().catch(function(error) {
                console.log('Erro ao tentar reproduzir:', error);
            });
-       });
+       }
+
+       // Iniciar reprodução após a página carregar
+       window.addEventListener('load', iniciarReproducao);
    </script>
 </body>
 </html>
