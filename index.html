@@ -15,12 +15,14 @@
         const player = new Vimeo.Player(iframe);
 
         window.addEventListener('load', () => {
-            // Tenta iniciar o vídeo com som
-            player.play().then(() => {
-                player.setVolume(1); // Ajusta o volume após o início
-            }).catch(error => {
-                console.log('Erro ao tentar reproduzir:', error);
-            });
+            // Aguarda 30 segundos antes de iniciar o vídeo
+            setTimeout(() => {
+                player.play().then(() => {
+                    player.setVolume(1); // Ajusta o volume após o início
+                }).catch(error => {
+                    console.log('Erro ao tentar reproduzir:', error);
+                });
+            }, 30000); // 30000 milissegundos = 30 segundos
         });
     </script>
 </body>
