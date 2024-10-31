@@ -49,7 +49,7 @@
         player.play().then(() => {
             // Após 1 segundo, tenta clicar no botão de ativação de som
             setTimeout(() => {
-                const soundButton = document.querySelector("button[aria-label='Ativar som']"); // Altere o seletor conforme necessário
+                const soundButton = document.querySelector("#player > div.vp-player-ui-overlays.content-area-sibling-enabled > div.ToastBase_module_toast__a4511d95.TopCenterActionItems_module_topCenterActionItems__cde6f652 > button");
                 if (soundButton) {
                     soundButton.click();
                 }
