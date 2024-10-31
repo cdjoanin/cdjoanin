@@ -37,21 +37,25 @@
     </style>
 </head>
 <body>
-    <h1>Bem-vindo ao Joanin Supermercados</h1>
     <div class="video-container">
-        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1024870399?badge=0&autopause=0&player_id=0&app_id=58479&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" title="Joanin"></iframe>
+        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1024870399?autoplay=1&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Joanin"></iframe>
     </div>
     <script src="https://player.vimeo.com/api/player.js"></script>
     <script>
         const iframe = document.getElementById('vimeo-player');
         const player = new Vimeo.Player(iframe);
 
-        window.addEventListener('load', () => {
-            player.play().then(() => {
-                player.setVolume(1); // Ajusta o volume após o início
-            }).catch(error => {
-                console.log('Erro ao tentar reproduzir:', error);
-            });
+        // Tenta iniciar a reprodução assim que a página carrega
+        player.play().then(() => {
+            // Após 1 segundo, tenta clicar no botão de ativação de som
+            setTimeout(() => {
+                const soundButton = document.querySelector("button[aria-label='Ativar som']"); // Altere o seletor conforme necessário
+                if (soundButton) {
+                    soundButton.click();
+                }
+            }, 1000); // 1 segundo após a reprodução
+        }).catch(error => {
+            console.log('Erro ao tentar reproduzir:', error);
         });
     </script>
 </body>
