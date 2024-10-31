@@ -7,7 +7,7 @@
 </head>
 <body>
     <div style="padding:56.25% 0 0 0;position:relative;">
-        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1024870399?badge=0&autopause=0&player_id=0&app_id=58479&loop=1&autoplay=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="joanin"></iframe>
+        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1024870399?badge=0&autopause=0&player_id=0&app_id=58479&loop=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="joanin"></iframe>
     </div>
     <script src="https://player.vimeo.com/api/player.js"></script>
     <script>
@@ -15,16 +15,12 @@
         const player = new Vimeo.Player(iframe);
 
         window.addEventListener('load', () => {
-            player.play().catch(error => {
+            // Tenta iniciar o vídeo com som
+            player.play().then(() => {
+                player.setVolume(1); // Ajusta o volume após o início
+            }).catch(error => {
                 console.log('Erro ao tentar reproduzir:', error);
             });
-
-            
-            setTimeout(() => {
-                player.setVolume(1).catch(error => {
-                    console.log('Erro ao ativar o som:', error);
-                });
-            }, 1000); 
         });
     </script>
 </body>
