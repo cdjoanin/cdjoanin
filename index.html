@@ -1,46 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joanin Supermercados</title>
-    <style>
-        body, html {
-            margin: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-        #vimeo-player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joanin Supermercados</title>
+  <style>
+    body, html {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    #vimeo-player {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    .overlay-blocker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      background: transparent;
+    }
+  </style>
 </head>
 <body>
-    <iframe id="vimeo-player" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+  <iframe id="vimeo-player" src="" frameborder="0"
+    allow="autoplay; fullscreen; picture-in-picture"
+    allowfullscreen></iframe>
 
-    <script src="https://player.vimeo.com/api/player.js"></script>
-    <script>
-        const videoIds = [
-            "1025140567", // 1º vídeo
-            "1024870399"  // 2º vídeo
-        ];
+   <div class="overlay-blocker"></div>
 
-        let currentIndex = 0;
-        const iframe = document.getElementById('vimeo-player');
-        iframe.src = `https://player.vimeo.com/video/${videoIds[currentIndex]}?autoplay=1&muted=1`;
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <script>
+    const videoIds = [
+      "1025140567", 
+      "1024870399"  
+    ];
 
-        const player = new Vimeo.Player(iframe);
+    let currentIndex = 0;
+    const iframe = document.getElementById('vimeo-player');
+    iframe.src = `https://player.vimeo.com/video/${videoIds[currentIndex]}?autoplay=1&muted=1&background=1`;
 
-        player.on('ended', function () {
-            currentIndex = (currentIndex + 1) % videoIds.length; // Loop infinito
-            player.loadVideo(videoIds[currentIndex]).then(function () {
-                player.play();
-            });
-        });
-    </script>
+    const player = new Vimeo.Player(iframe);
+
+    player.on('ended', function () {
+      currentIndex = (currentIndex + 1) % videoIds.length;
+      player.loadVideo(videoIds[currentIndex]).then(() => player.play());
+    });
+  </script>
 </body>
 </html>
