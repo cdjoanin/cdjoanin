@@ -20,17 +20,26 @@
     </style>
 </head>
 <body>
-    <div>
-        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1025140567?autoplay=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Joanin" allowfullscreen></iframe>
-        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1024870399?autoplay=1&loop=1&muted=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Joanin" allowfullscreen></iframe>    
-    </div>
+    <iframe id="vimeo-player" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+
     <script src="https://player.vimeo.com/api/player.js"></script>
     <script>
+        const videoIds = [
+            "1025140567", // 1º vídeo
+            "1024870399"  // 2º vídeo
+        ];
+
+        let currentIndex = 0;
         const iframe = document.getElementById('vimeo-player');
+        iframe.src = `https://player.vimeo.com/video/${videoIds[currentIndex]}?autoplay=1&muted=1`;
+
         const player = new Vimeo.Player(iframe);
 
-        player.on('loaded', function() {
-            player.requestFullscreen();
+        player.on('ended', function () {
+            currentIndex = (currentIndex + 1) % videoIds.length; // Loop infinito
+            player.loadVideo(videoIds[currentIndex]).then(function () {
+                player.play();
+            });
         });
     </script>
 </body>
